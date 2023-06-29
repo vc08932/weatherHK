@@ -3,6 +3,30 @@ import requests
 import datetime
 import sys
 
+forecast_icon = {
+  "50":"陽光充沛",
+  "51":"間有陽光",
+  "52":"短暫陽光",
+  "53":"間有陽光幾陣驟雨",
+  "54":"短暫陽光有驟雨",
+  "60":"多雲",
+  "61":"密雲",
+  "62":"微雨",
+  "63":"雨",
+  "64":"大雨",
+  "65":"雷暴",
+  "80":"大風",
+  "81":"乾燥",
+  "82":"潮濕",
+  "83":"霧",
+  "84":"薄霧",
+  "85":"煙霞",
+  "90":"熱",
+  "91":"暖",
+  "92":"涼",
+  "93":"冷"
+}
+
 def get_data():
   res = requests.get("https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType=fnd&lang=tc")
   data=json.loads(res.text)
@@ -16,19 +40,24 @@ def dateprocess(str):
 
 def weather_info(date,full=0):
   data = get_data()
+
   if full == 0:
     print("天氣概況：",data['generalSituation'],"\n")
 
-  year = int(dateprocess(data["weatherForecast"][date]["forecastDate"])[0])
-  month = int(dateprocess(data["weatherForecast"][date]["forecastDate"])[1])
-  day = int(dateprocess(data["weatherForecast"][date]["forecastDate"])[2])
+  weather_forecast = data["weatherForecast"][date]
 
-  print(f'{year} 年 {month} 月 {day} 日 ({datetime.date(year,month,day).strftime( "%A")[:3]})')
-  print(f'風：{data["weatherForecast"][date]["forecastWind"]}')
-  print(f'天氣：{data["weatherForecast"][date]["forecastWeather"]}')
-  print(f'最高溫度：{data["weatherForecast"][date]["forecastMaxtemp"]["value"]}°C')
-  print(f'最低溫度：{data["weatherForecast"][date]["forecastMintemp"]["value"]}°C')
-  print(f'相對濕度：{data["weatherForecast"][date]["forecastMinrh"]["value"]}% - {data["weatherForecast"][date]["forecastMaxrh"]["value"]}% ')
+  year = int(dateprocess(weather_forecast["forecastDate"])[0])
+  month = int(dateprocess(weather_forecast["forecastDate"])[1])
+  day = int(dateprocess(weather_forecast["forecastDate"])[2])
+  
+  a=weather_forecast["ForecastIcon"]
+  print(f'{year} 年 {month} 月 {day} 日 ({weather_forecast["week"]})')
+  print(f'風：{weather_forecast["forecastWind"]}')
+  print(f'天氣：{weather_forecast["forecastWeather"]}  ({forecast_icon[str(weather_forecast["ForecastIcon"])]})')
+  print(f'最高溫度：{weather_forecast["forecastMaxtemp"]["value"]}°C')
+  print(f'最低溫度：{weather_forecast["forecastMintemp"]["value"]}°C')
+  print(f'相對濕度：{weather_forecast["forecastMinrh"]["value"]}% - {weather_forecast["forecastMaxrh"]["value"]}% ')
+  print(f'降雨概率：{weather_forecast["PSR"]}')
   print("-"*20,"\n")
 
 def all_info():
