@@ -1,6 +1,10 @@
-# weather
+# weatherHK
 ## 環境依賴
 - Python 3.X
+- json （自带）
+- requests （自带）
+- sys （自带）
+- datetime （自带）
 
 ## 功能描述
 WeatherHK 是命令行界面，通過調用香港天文台的 API 獲取香港本地天氣報告和九天天氣預測。
