@@ -41,7 +41,7 @@ def get_data(datatype):
   data=json.loads(res.text)
   return data
 
-def dateprocess(str,dash=False):
+def dateprocess(str,dash=False,leading_zero = False):
   if dash == False:
     year = str[0:4]
     month = str[4:6]
@@ -54,6 +54,13 @@ def dateprocess(str,dash=False):
     day = str[8:10]
     time = str[11:16]
   
+  if leading_zero == False:
+    if month[0] == "0":
+      month = month[1]
+
+    if day[0] == "0":
+      day = day[1]
+      
   return year,month,day,time
 
 def weather_report_info():
@@ -137,7 +144,7 @@ def weather_report_info():
 
   # 紫外線指數
   if data["uvindex"] != "":
-    pass
+    print(f'紫外線指數：{data["uvindex"]["data"][0]["value"]}（{data["uvindex"]["data"][0]["desc"]}）\n')
 
   # 閃電
   if "lightening" in data:
@@ -153,6 +160,8 @@ def weather_report_info():
 def weather_forecast_info(data,date,full=0):
 
   if full == 0:
+    update_time = dateprocess(data["updateTime"],True)
+    print(f'更新時間：{update_time[0]} 年 {update_time[1]} 月 {update_time[2]} 日 {update_time[3]}\n')
     print("天氣概況：",data['generalSituation'],"\n")
 
   weather_forecast = data["weatherForecast"][date]
