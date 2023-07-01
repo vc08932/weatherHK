@@ -2,7 +2,7 @@
 ## 環境依賴
 - Python 3
 - json （自带）
-- requests （自带）
+- requests 
 - sys （自带）
 - datetime （自带）
 
