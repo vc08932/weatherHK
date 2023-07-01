@@ -97,10 +97,6 @@ def heat_stress_warning():
 def weather_report_info():
   data = get_weather_data("rhrread")
 
-  start_time = dateprocess(data["rainfall"]["startTime"],True)
-  end_time = dateprocess(data["rainfall"]["endTime"],True)
-  rain = False
-
   # 天氣圖標
   print("天氣概況：",end="")
   for i in range(len(data["icon"])):
@@ -121,6 +117,11 @@ def weather_report_info():
       for i in range(len(data["tcmessage"])):
         print(f'熱帶氣旋位置:{data["tcmessage"][i]}\n')
 
+  # 警告信息
+  if data["warningMessage"] != "": # 判斷是否爲空字串
+    for i in range(len(data["warningMessage"])):
+      print(f'警告信息：{data["warningMessage"][i]}')
+    print()
 
 
   # 溫度
@@ -134,6 +135,11 @@ def weather_report_info():
   print(f'濕度：{data["humidity"]["data"][0]["value"]}%\n')
 
   # 雨量
+  start_time_rain = dateprocess(data["rainfall"]["startTime"],True)
+  end_time_rain = dateprocess(data["rainfall"]["endTime"],True)
+  rain = False
+
+
   for k in range(0,18): # 判断全港是否有雨
       if data["rainfall"]["data"][k]["main"] == "FALSE" and data["rainfall"]["data"][k]["max"] != 0 :
         rain = True
@@ -146,17 +152,17 @@ def weather_report_info():
           print(f'暴雨警告提醒:{data["rainstormReminder"]}\n')
 
 
-    if start_time[2] == dateprocess(str(datetime.date.today()),True)[2]: # 判斷是否同一天
-      print(f"雨量（時間：{start_time[3]} - {end_time[3]}）：")
+    #if start_time[2] == dateprocess(str(datetime.date.today()),True)[2]: # 判斷是否同一天
+    print(f"雨量（時間：{start_time_rain[3]} - {end_time_rain[3]}）：")
     
-    elif start_time[1] == dateprocess(str(datetime.date.today()),True)[1]: # 判斷是否同一月
-      print(f"雨量（時間：{start_time[2]} 日 {start_time[3]} - {end_time[2]} 日 {end_time[3]}）：")
+    # elif start_time[1] == dateprocess(str(datetime.date.today()),True)[1]: # 判斷是否同一月
+    #   print(f"雨量（時間：{start_time[2]} 日 {start_time[3]} - {end_time[2]} 日 {end_time[3]}）：")
 
-    elif start_time[0] == dateprocess(str(datetime.date.today()),True)[0]: # 判斷是否同一年
-      print(f"雨量（時間：{start_time[1]} 月 {start_time[2]} 日 {start_time[3]} - {end_time[1]} 月 {end_time[2]} 日 {end_time[3]}）：")
+    # elif start_time[0] == dateprocess(str(datetime.date.today()),True)[0]: # 判斷是否同一年
+    #   print(f"雨量（時間：{start_time[1]} 月 {start_time[2]} 日 {start_time[3]} - {end_time[1]} 月 {end_time[2]} 日 {end_time[3]}）：")
 
-    else: # 跨年
-      print(f"雨量（時間：{start_time[1]} 年 {start_time[1]} 月 {start_time[2]} 日 {start_time[3]} - {end_time[1]} 年 {end_time[1]} 月 {end_time[2]} 日 {end_time[3]}）：")
+    # else: # 跨年
+    #   print(f"雨量（時間：{start_time[1]} 年 {start_time[1]} 月 {start_time[2]} 日 {start_time[3]} - {end_time[1]} 年 {end_time[1]} 月 {end_time[2]} 日 {end_time[3]}）：")
 
     for k in range(0,18):
         if data["rainfall"]["data"][k]["main"] == "FALSE" and data["rainfall"]["data"][k]["max"] != 0 :
@@ -169,23 +175,29 @@ def weather_report_info():
     print("全港無雨")
 
 
-  # 警告信息
-  if data["warningMessage"] != "": # 判斷是否爲空字串
-    for i in range(len(data["warningMessage"])):
-      print(f'警告信息：{data["warningMessage"][i]}')
-    print()
-
   # 紫外線指數
   if data["uvindex"] != "":
     print(f'紫外線指數：{data["uvindex"]["data"][0]["value"]}（{data["uvindex"]["data"][0]["desc"]}）\n')
 
   # 閃電
-  if "lightening" in data:
-    if data["lightening"] != "":
-      pass    
-    
+  if "lightning" in data:
+    if data["lightning"] != "":
+
+      start_time_lightning = dateprocess(data["lightning"]["startTime"])[3]
+      end_time_lightning = dateprocess(data["lightning"]["endTime"])[3]
+
+      print(f"閃電（時間：{start_time_lightning} - {end_time_lightning}）：")
+
+      for i in range(3):
+        if data["lightning"]["data"][i]["occur"] == "true":
+          print(f'\t{data["lightning"]["data"][i]["place"]}：有')
+
+        elif data["lightning"]["data"][i]["occur"] == "false":
+          print(f'\t{data["lighning"]["data"][i]["place"]}：無')
+      
+      print("\n","-"*20,"\n")
   update_time = dateprocess(data["updateTime"],True)
-  print(f"更新時間：{update_time[0]} 年 {update_time[1]} 月 {update_time[2]} 日 {update_time[3]}")
+  print(f"\n更新時間：{update_time[0]} 年 {update_time[1]} 月 {update_time[2]} 日 {update_time[3]}")
 
   print('\n','='*20,'\n')
 
@@ -193,7 +205,7 @@ def weather_report_info():
 
 def weather_forecast_info(data,date,full=0):
 
-  if full == 0:
+  if full == 0: # 判斷是否獲取九天天氣預報，避免重複輸出
     update_time = dateprocess(data["updateTime"],True)
     print(f'更新時間：{update_time[0]} 年 {update_time[1]} 月 {update_time[2]} 日 {update_time[3]}\n')
     print("天氣概況：",data['generalSituation'],"\n")
