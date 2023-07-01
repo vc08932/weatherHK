@@ -36,10 +36,20 @@ icon = {
   "93":"冷"
 }
 
-def get_data(datatype):
+
+heat_stress_warning_level = {
+  "AMBER" : "黃色工作暑熱警告",
+  "RED" : "紅色工作暑熱警告",
+  "BLACK" : "黑色工作暑熱警告",
+}
+
+
+
+def get_weather_data(datatype):
   res = requests.get(f"https://data.weather.gov.hk/weatherAPI/opendata/weather.php?dataType={datatype}&lang=tc")
   data=json.loads(res.text)
   return data
+
 
 def dateprocess(str,dash=False,leading_zero = False):
   if dash == False:
@@ -60,11 +70,32 @@ def dateprocess(str,dash=False,leading_zero = False):
 
     if day[0] == "0":
       day = day[1]
-      
+
   return year,month,day,time
 
+
+# 工作暑熱警告
+def heat_stress_warning():
+  res = requests.get(f"https://data.weather.gov.hk/weatherAPI/opendata/hsww.php?lang=tc")
+  data=json.loads(res.text)
+  
+  if bool(data) == True: # 判斷是否有值
+    data = data["hsww"]
+    if data["actionCode"] == "CANCEL":
+      time = dateprocess(data["effectiveTime"])[3]
+      print(f'工作暑熱警告已於 {time} 取消。')
+
+    elif data["actionCode"] == "ISSUE":
+      print("工作暑熱警告：")
+      print(f'\t警告級別：{heat_stress_warning_level[data["warningLevel"]]}')
+      effective_time = dateprocess(data["effectiveTime"],True)
+      issue_time = dateprocess(date["issueTime"],True)
+      print(f'\t生效時間：{effective_time}')
+      print(f'\t發出時間：{issue_time}')
+
+
 def weather_report_info():
-  data = get_data("rhrread")
+  data = get_weather_data("rhrread")
 
   start_time = dateprocess(data["rainfall"]["startTime"],True)
   end_time = dateprocess(data["rainfall"]["endTime"],True)
@@ -75,6 +106,8 @@ def weather_report_info():
   for i in range(len(data["icon"])):
     print(icon[str(data["icon"][i])],end=" ")
   print("\n")
+
+  heat_stress_warning()
 
   # 特別天氣提示
   if "specialWxTips" in data:
@@ -154,6 +187,7 @@ def weather_report_info():
   update_time = dateprocess(data["updateTime"],True)
   print(f"更新時間：{update_time[0]} 年 {update_time[1]} 月 {update_time[2]} 日 {update_time[3]}")
 
+  print('\n','='*20,'\n')
 
 
 
@@ -209,7 +243,7 @@ while True:
     weather_report_info()
 
   elif command == 2:
-    data = get_data("fnd")
+    data = get_weather_data("fnd")
 
     print("""
 天氣預報：\n
