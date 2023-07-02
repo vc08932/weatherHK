@@ -150,12 +150,14 @@ def weather_report_info():
     if "rainstormReminder" in data:
       if data["rainstormReminder"] != "":
           print(f'暴雨警告提醒:{data["rainstormReminder"]}\n')
-
     print(f"雨量（時間：{start_time_rain[3]} - {end_time_rain[3]}）：")
 
     for k in range(0,18):
         if data["rainfall"]["data"][k]["main"] == "FALSE" and data["rainfall"]["data"][k]["max"] != 0 :
-          print(f'\t{data["rainfall"]["data"][k]["place"]}：{data["rainfall"]["data"][k]["min"]}mm - {data["rainfall"]["data"][k]["max"]}mm')
+          if "min" in data["rainfall"]["data"][k]:
+            print(f'\t{data["rainfall"]["data"][k]["place"]}：{data["rainfall"]["data"][k]["min"]}mm - {data["rainfall"]["data"][k]["max"]}mm')
+          else:
+            print(f'\t{data["rainfall"]["data"][k]["place"]}：{data["rainfall"]["data"][k]["max"]}mm')
         else:
           print(f'\t{data["rainfall"]["data"][k]["place"]}：無雨')
     print("-"*20,"\n")
