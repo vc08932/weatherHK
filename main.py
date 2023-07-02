@@ -151,18 +151,7 @@ def weather_report_info():
       if data["rainstormReminder"] != "":
           print(f'暴雨警告提醒:{data["rainstormReminder"]}\n')
 
-
-    #if start_time[2] == dateprocess(str(datetime.date.today()),True)[2]: # 判斷是否同一天
     print(f"雨量（時間：{start_time_rain[3]} - {end_time_rain[3]}）：")
-    
-    # elif start_time[1] == dateprocess(str(datetime.date.today()),True)[1]: # 判斷是否同一月
-    #   print(f"雨量（時間：{start_time[2]} 日 {start_time[3]} - {end_time[2]} 日 {end_time[3]}）：")
-
-    # elif start_time[0] == dateprocess(str(datetime.date.today()),True)[0]: # 判斷是否同一年
-    #   print(f"雨量（時間：{start_time[1]} 月 {start_time[2]} 日 {start_time[3]} - {end_time[1]} 月 {end_time[2]} 日 {end_time[3]}）：")
-
-    # else: # 跨年
-    #   print(f"雨量（時間：{start_time[1]} 年 {start_time[1]} 月 {start_time[2]} 日 {start_time[3]} - {end_time[1]} 年 {end_time[1]} 月 {end_time[2]} 日 {end_time[3]}）：")
 
     for k in range(0,18):
         if data["rainfall"]["data"][k]["main"] == "FALSE" and data["rainfall"]["data"][k]["max"] != 0 :
