@@ -183,14 +183,14 @@ def weather_report_info():
   if "lightning" in data:
     if data["lightning"] != "":
 
-      start_time_lightning = dateprocess(data["lightning"]["startTime"])[3]
-      end_time_lightning = dateprocess(data["lightning"]["endTime"])[3]
+      start_time_lightning = dateprocess(data["lightning"]["startTime"],True)[3]
+      end_time_lightning = dateprocess(data["lightning"]["endTime"],True)[3]
 
       print(f"閃電（時間：{start_time_lightning} - {end_time_lightning}）：")
 
       for i in range(len(data["lightning"]["data"])):
         if data["lightning"]["data"][i]["occur"] == "true":
-          print(f'\t{data["lightning"]["data"][i]["place"]}：有')
+          print(f'\t{data["lightning"]["data"][i]["place"]}')
       
       print("\n","-"*20,"\n")
   update_time = dateprocess(data["updateTime"],True)
