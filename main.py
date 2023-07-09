@@ -88,8 +88,8 @@ def heat_stress_warning():
     elif data["actionCode"] == "ISSUE":
       print("工作暑熱警告：")
       print(f'\t警告級別：{heat_stress_warning_level[data["warningLevel"]]}')
-      effective_time = dateprocess(data["effectiveTime"],True)
-      issue_time = dateprocess(date["issueTime"],True)
+      effective_time = dateprocess(data["effectiveTime"],True)[3]
+      issue_time = dateprocess(data["issueTime"],True)[3]
       print(f'\t生效時間：{effective_time}')
       print(f'\t發出時間：{issue_time}')
 
