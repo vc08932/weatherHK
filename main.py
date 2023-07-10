@@ -82,7 +82,7 @@ def heat_stress_warning():
   if bool(data) == True: # 判斷是否有值
     data = data["hsww"]
     if data["actionCode"] == "CANCEL":
-      time = dateprocess(data["effectiveTime"])[3]
+      time = dateprocess(data["effectiveTime"],True)[3]
       print(f'工作暑熱警告已於 {time} 取消。')
 
     elif data["actionCode"] == "ISSUE":
