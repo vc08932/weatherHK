@@ -115,7 +115,7 @@ def weather_report_info():
   if "tcmessage" in data:
     if data["tcmessage"] != "":
       for i in range(len(data["tcmessage"])):
-        print(f'熱帶氣旋位置:{data["tcmessage"][i]}\n')
+        print(data["tcmessage"][i],'\n')
 
   # 警告信息
   if data["warningMessage"] != "": # 判斷是否爲空字串
@@ -232,6 +232,7 @@ while True:
     command = int(input("指令："))
 
   except:
+    print("請按指令輸入。")
     continue
   print('='*20,"\n")
 
@@ -256,6 +257,7 @@ while True:
       command = int(input("指令："))
 
     except:
+      print("請按指令輸入。")
       continue
     print()
     
